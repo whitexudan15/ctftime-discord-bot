@@ -2,9 +2,7 @@ name: CTFTime
 
 on:
   schedule:
-    - cron:  '0 0 * * *'
-
-  # Allows you to run this workflow manually from the Actions tab
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
@@ -12,40 +10,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive  # Force le téléchargement complet du sous-module
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/cache@v4
+      - name: Cache CTFTime
+        uses: actions/cache@v4
         with:
           path: ctftime_cache
-          key: ${{ runner.os }}-ctftime-${{ hashFiles('ctftime_cache') }}
+          key: ${{ runner.os }}-ctftime-cache
           restore-keys: |
-            ${{ runner.os }}-ctftime-
+            ${{ runner.os }}-ctftime-cache
 
-      - uses: actions/cache@v4
+      - name: Cache pip
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Run CTFTime Bot
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DiscordWebhookUrl }}
         run: |
           if [ -z "$DISCORD_WEBHOOK_URL" ]; then
-            echo "ERREUR : Le secret DiscordWebhookUrl est vide ou introuvable dans vos paramètres GitHub !"
+            echo "Secret DiscordWebhookUrl introuvable."
             exit 1
           fi
-          
-          python -m pip install --upgrade pip
-          
-          # Vérification de la présence du dossier
-          if [ ! -d "CTFtime-Discord-hooks" ]; then
-            echo "Le dossier des scripts est manquant, clonage manuel..."
-            git clone https://github.com
-          fi
-          
-          pip install -r CTFtime-Discord-hooks/requirements.txt
-          python CTFtime-Discord-hooks/CTFtimeDiscordHooks.py -w "$DISCORD_WEBHOOK_URL" -d 10 -c ctftime_cache
+
+          python CTFtimeDiscordHooks.py \
+            -w "$DISCORD_WEBHOOK_URL" \
+            -d 10 \
+            -c ctftime_cache
