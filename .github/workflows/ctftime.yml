@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: recursive  # Force le téléchargement complet du sous-module
 
       - uses: actions/cache@v4
         with:
@@ -30,10 +30,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Run a one-line script
+      - name: Run CTFTime Bot
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DiscordWebhookUrl }}
         run: |
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "ERREUR : Le secret DiscordWebhookUrl est vide ou introuvable dans vos paramètres GitHub !"
+            exit 1
+          fi
+          
           python -m pip install --upgrade pip
+          
+          # Vérification de la présence du dossier
+          if [ ! -d "CTFtime-Discord-hooks" ]; then
+            echo "Le dossier des scripts est manquant, clonage manuel..."
+            git clone https://github.com
+          fi
+          
           pip install -r CTFtime-Discord-hooks/requirements.txt
-          python CTFtime-Discord-hooks/CTFtimeDiscordHooks.py -w "$DISCORD_WEBHOOK_URL" -d 10 -c ctftime_cache 
+          python CTFtime-Discord-hooks/CTFtimeDiscordHooks.py -w "$DISCORD_WEBHOOK_URL" -d 10 -c ctftime_cache
