@@ -131,7 +131,7 @@ def send_discord(webhook, events):
             },
 
             "footer": {
-                "text": "NEWS CTF • ΠΡΙΜΕ BOT",
+                "text": "CTFTIME • NEWS CTF • ΠΡΙΜΕ BOT",
                 "icon_url": "https://github.com/whitexudan15/ctftime-discord-bot/blob/main/assets/ctftime-logo.png?raw=true"
             },
 
