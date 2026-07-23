@@ -75,6 +75,37 @@ def fetch_ctfs(days):
     return upcoming
 
 
+def format_date(date):
+    dt = datetime.fromisoformat(
+        date.replace("Z", "+00:00")
+    )
+
+    return dt.strftime(
+        "%A %d-%m-%Y à %HH%M UTC"
+    )
+
+
+def format_duration(duration):
+    if not duration:
+        return "Non défini"
+
+    days = duration.get("days", 0)
+    hours = duration.get("hours", 0)
+
+    parts = []
+
+    if days:
+        parts.append(f"{days} jour{'s' if days > 1 else ''}")
+
+    if hours:
+        parts.append(f"{hours} heure{'s' if hours > 1 else ''}")
+
+    if not parts:
+        return "Moins d'une heure"
+
+    return " et ".join(parts)
+
+
 def send_discord(webhook, events):
     if not events:
         return
@@ -82,49 +113,47 @@ def send_discord(webhook, events):
     embeds = []
 
     for event in events:
+
         embeds.append({
             "title": f"🚩 {event['title']}",
+
             "url": event["url"],
 
-            "thumbnail": {
-                "url": "https://ctftime.org/static/images/ct/logo.svg"
-            },
+            "description": (
+                "🏆 **Plateforme :** CTFTime\n"
+                "🔗 **Lien :** "
+                f"[Voir le challenge]({event['url']})"
+            ),
 
             "fields": [
                 {
                     "name": "📅 Début",
-                    "value": event["start"],
+                    "value": format_date(event["start"]),
                     "inline": False
                 },
                 {
                     "name": "⏱ Durée",
-                    "value": str(event["duration"]),
-                    "inline": False
-                },
-                {
-                    "name": "🏆 Plateforme",
-                    "value": "CTFTime",
-                    "inline": False
-                },
-                {
-                    "name": "🔗 Lien",
-                    "value": event["url"],
+                    "value": format_duration(event["duration"]),
                     "inline": False
                 }
             ],
 
+            "thumbnail": {
+                "url": "https://github.com/whitexudan15/ctftime-discord-bot/blob/main/assets/prime-bot.png?raw=true"
+            },
+
             "footer": {
-                "text": "CTFTime Bot • Nouveaux CTF",
-                "icon_url": "https://ctftime.org/static/images/ct/logo.svg"
+                "text": "ΠΡΙΜΕ BOT • NEWS CTF",
+                "icon_url": "https://github.com/whitexudan15/ctftime-discord-bot/blob/main/assets/prime-bot.png?raw=true"
             },
 
             "color": 16711680
         })
 
     payload = {
-        "content": "🚩 **Nouveaux CTF disponibles**",
+        "content": "🚩 **NEWS CTF**",
         "username": "ΠΡΙΜΕ BOT",
-        "avatar_url": "https://github.com/whitexudan15/ctftime-discord-bot/blob/main/assets/prime-bot.png",
+        "avatar_url": "https://github.com/whitexudan15/ctftime-discord-bot/blob/main/assets/prime-bot.png?raw=true",
         "embeds": embeds
     }
 
