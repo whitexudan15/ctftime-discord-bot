@@ -124,7 +124,7 @@ def send_discord(webhook, events):
     payload = {
         "content": "🚩 **Nouveaux CTF disponibles**",
         "username": "ΠΡΙΜΕ BOT",
-        "avatar_url": "https://raw.githubusercontent.com/lux/ctftime-discord-bot/main/assets/bot-icon.png",
+        "avatar_url": "https://github.com/whitexudan15/ctftime-discord-bot/blob/main/assets/prime-bot.png",
         "embeds": embeds
     }
 
