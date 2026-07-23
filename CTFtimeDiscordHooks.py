@@ -83,25 +83,48 @@ def send_discord(webhook, events):
 
     for event in events:
         embeds.append({
-            "title": event["title"],
+            "title": f"🚩 {event['title']}",
             "url": event["url"],
+
+            "thumbnail": {
+                "url": "https://ctftime.org/static/images/ct/logo.svg"
+            },
+
             "fields": [
                 {
-                    "name": "Début",
+                    "name": "📅 Début",
                     "value": event["start"],
-                    "inline": True
+                    "inline": False
                 },
                 {
-                    "name": "Durée",
+                    "name": "⏱ Durée",
                     "value": str(event["duration"]),
-                    "inline": True
+                    "inline": False
+                },
+                {
+                    "name": "🏆 Plateforme",
+                    "value": "CTFTime",
+                    "inline": False
+                },
+                {
+                    "name": "🔗 Lien",
+                    "value": event["url"],
+                    "inline": False
                 }
             ],
-            "color": 5814783
+
+            "footer": {
+                "text": "CTFTime Bot • Nouveaux CTF",
+                "icon_url": "https://ctftime.org/static/images/ct/logo.svg"
+            },
+
+            "color": 16711680
         })
 
     payload = {
-        "content": "🚩 Nouveaux CTF disponibles sur CTFTime",
+        "content": "🚩 **Nouveaux CTF disponibles**",
+        "username": "ΠΡΙΜΕ BOT",
+        "avatar_url": "https://raw.githubusercontent.com/lux/ctftime-discord-bot/main/assets/bot-icon.png",
         "embeds": embeds
     }
 
@@ -170,12 +193,12 @@ def main():
         )
 
         print(
-            f"{len(new_events)} nouveaux CTF envoyés."
+            f"{len(new_events)} ✅"
         )
 
     else:
         print(
-            "Aucun nouveau CTF."
+            "❌"
         )
 
 
