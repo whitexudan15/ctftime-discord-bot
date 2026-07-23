@@ -115,15 +115,15 @@ def send_discord(webhook, events):
     for event in events:
 
         embeds.append({
-            "title": f"##**🚩 {event['title']}**",
+            "title": f"##🚩 {event['title']}",
 
             "url": event["url"],
 
             "description": (
-                "#🏆 **Plateforme :** CTFTime\n"
-                "#🔗 **Lien :** "f"#[Voir le challenge]({event['url']})\n"
-                "#📅 **Début :** "f"{format_date(event["start"])}\n"
-                "#⏱ **Durée :** "f"{format_duration(event["duration"])}\n"
+                "#🏆 Plateforme : CTFTime\n"
+                "#🔗 Lien : "f"[Voir le challenge]({event['url']})\n"
+                "#📅 Début : "f"{format_date(event["start"])}\n"
+                "#⏱ Durée : "f"{format_duration(event["duration"])}\n"
             ),
 
             "thumbnail": {
@@ -131,8 +131,8 @@ def send_discord(webhook, events):
             },
 
             "footer": {
-                "text": "NEWS CTF • ΠΡΙΜΕ BOT",
-                "icon_url": "https://ctftime.org/static/images/ct/logo.svg"
+                "text": "**NEWS CTF • ΠΡΙΜΕ BOT**",
+                "icon_url": "https://github.com/whitexudan15/ctftime-discord-bot/blob/main/assets/ctftime-logo.png?raw=true"
             },
 
             "color": 16711680
