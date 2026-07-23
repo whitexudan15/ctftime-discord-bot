@@ -1,4 +1,4 @@
-name: CTFTime Discord Bot
+name: CTFTime
 
 on:
   schedule:
